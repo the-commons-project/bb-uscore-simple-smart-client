@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Example SMART App</title>
+        <script src="https://cdn.jsdelivr.net/npm/fhirclient/build/fhir-client.js"></script>
+        <style>
+            #patient, #coverage, #eob, #allergies, #diagnostic_reports, #labs, #vitals, #procedures, #conditions, #immunizations, #medication_statements, #medication_requests {
+                font-family: Monaco, monospace;
+                white-space: pre;
+                font-size: 13px;
+                height: 400px;
+                overflow: scroll;
+                border: 1px solid #CCC;
+                margin-right: 100px;
+            }
+        </style>
+    </head>
+    <body>
+        <h4>Current Patient</h4>
+        <div id="patient">Loading...</div>
+        <br/>
+        <h4>Coverage</h4>
+        <div id="coverage">Loading...</div>
+        <br/>
+        <h4>Explanation of Benefits</h4>
+        <div id="eob">Loading...</div>
+        <br/>
+        <h4>Allergies</h4>
+        <div id="allergies">Loading...</div>
+        <br/>
+        <h4>Clinical Vitals</h4>
+        <div id="vitals">Loading...</div>
+        <br/>
+        <h4>Conditions</h4>
+        <div id="conditions">Loading...</div>
+        <br/>
+        <h4>Immunizations</h4>
+        <div id="immunizations">Loading...</div>
+        <br/>
+        <h4>Diagnostic Reports</h4>
+        <div id="diagnostic_reports">Loading...</div>
+        <br/>
+        <h4>Labs</h4>
+        <div id="labs">Loading...</div>
+        <br/>
+        <h4>Medication Statements</h4>
+        <div id="medication_statements">Loading...</div>
+        <br/>
+        <h4>Medication Requests</h4>
+        <div id="medication_requests">Loading...</div>
+        <br/>
+        <h4>Procedures</h4>
+        <div id="procedures">Loading...</div>
+
+        <script type="text/javascript">
+            FHIR.oauth2.ready().then(function(client) {
+                
+                // Render the current patient (or any error)
+                client.patient.read().then(
+                    function(pt) {
+                        document.getElementById("patient").innerText = JSON.stringify(pt, null, 4);
+                    },
+                    function(error) {
+                        document.getElementById("patient").innerText = error.stack;
+                    }
+                );
+
+                client.request("/Coverage?patient=" + client.patient.id)
+                .then(function(data) {
+                    return data.entry || [];
+                })
+                .then(
+                    function(resources) {
+                        document.getElementById("coverage").innerText = JSON.stringify(resources, null, 4);
+                    },
+                    function(error) {
+                        document.getElementById("coverage").innerText = error.stack;
+                    }
+                );
+
+                client.request("/ExplanationOfBenefit?patient=" + client.patient.id)
+                .then(function(data) {
+                    return data.entry || [];
+                })
+                .then(
+                    function(resources) {
+                        document.getElementById("eob").innerText = JSON.stringify(resources, null, 4);
+                    },
+                    function(error) {
+                        document.getElementById("eob").innerText = error.stack;
+                    }
+                );
+
+                client.request("/AllergyIntolerance?patient=" + client.patient.id)
+                .then(function(data) {
+                    return data.entry || [];
+                })
+                .then(
+                    function(resources) {
+                        document.getElementById("allergies").innerText = JSON.stringify(resources, null, 4);
+                    },
+                    function(error) {
+                        document.getElementById("allergies").innerText = error.stack;
+                    }
+                );
+
+                client.request("/Observation?category=vital-signs&patient=" + client.patient.id)
+                .then(function(data) {
+                    return data.entry || [];
+                })
+                .then(
+                    function(resources) {
+                        document.getElementById("vitals").innerText = JSON.stringify(resources, null, 4);
+                    },
+                    function(error) {
+                        document.getElementById("vitals").innerText = error.stack;
+                    }
+                );
+
+                client.request("/Condition?patient=" + client.patient.id)
+                .then(function(data) {
+                    return data.entry || [];
+                })
+                .then(
+                    function(resources) {
+                        document.getElementById("conditions").innerText = JSON.stringify(resources, null, 4);
+                    },
+                    function(error) {
+                        document.getElementById("conditions").innerText = error.stack;
+                    }
+                );
+
+                client.request("/Immunization?patient=" + client.patient.id)
+                .then(function(data) {
+                    return data.entry || [];
+                })
+                .then(
+                    function(resources) {
+                        document.getElementById("immunizations").innerText = JSON.stringify(resources, null, 4);
+                    },
+                    function(error) {
+                        document.getElementById("immunizations").innerText = error.stack;
+                    }
+                );
+
+                client.request("/DiagnosticReport?patient=" + client.patient.id)
+                .then(function(data) {
+                    return data.entry || [];
+                })
+                .then(
+                    function(resources) {
+                        document.getElementById("diagnostic_reports").innerText = JSON.stringify(resources, null, 4);
+                    },
+                    function(error) {
+                        document.getElementById("diagnostic_reports").innerText = error.stack;
+                    }
+                );
+
+                client.request("/Observation?category=laboratory&patient=" + client.patient.id)
+                .then(function(data) {
+                    return data.entry || [];
+                })
+                .then(
+                    function(resources) {
+                        document.getElementById("labs").innerText = JSON.stringify(resources, null, 4);
+                    },
+                    function(error) {
+                        document.getElementById("labs").innerText = error.stack;
+                    }
+                );
+
+                client.request("/MedicationRequest?patient=" + client.patient.id)
+                .then(function(data) {
+                    return data.entry || [];
+                })
+                .then(
+                    function(resources) {
+                        document.getElementById("medication_requests").innerText = JSON.stringify(resources, null, 4);
+                    },
+                    function(error) {
+                        document.getElementById("medication_requests").innerText = error.stack;
+                    }
+                );
+
+                client.request("/MedicationStatement?patient=" + client.patient.id)
+                .then(function(data) {
+                    return data.entry || [];
+                })
+                .then(
+                    function(resources) {
+                        document.getElementById("medication_statements").innerText = JSON.stringify(resources, null, 4);
+                    },
+                    function(error) {
+                        document.getElementById("medication_statements").innerText = error.stack;
+                    }
+                );
+
+                client.request("/Procedure?patient=" + client.patient.id)
+                .then(function(data) {
+                    return data.entry || [];
+                })
+                .then(
+                    function(resources) {
+                        document.getElementById("procedures").innerText = JSON.stringify(resources, null, 4);
+                    },
+                    function(error) {
+                        document.getElementById("procedures").innerText = error.stack;
+                    }
+                );
+
+
+
+                
+
+                
+
+            }).catch(console.error);
+        </script>
+    </body>
+</html>
+
